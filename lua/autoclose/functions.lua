@@ -73,33 +73,9 @@ function M.autoclose(open, close)
         end
     end
 
-    local inlay_hints_offset = 0
-
-    if vim.lsp.inlay_hint.is_enabled() then
-        local inlay_hints = vim.lsp.inlay_hint.get({
-            bufnr = 0,
-            range = {
-                start = { line = position.row - 1, character = 0 },
-                ['end'] = { line = position.row - 1, character = position.col - 1 }
-            }
-        })
-
-        for _, hint in pairs(inlay_hints) do
-            inlay_hints_offset = inlay_hints_offset + #hint.inlay_hint.label
-
-            if hint.inlay_hint.paddingLeft then
-                inlay_hints_offset = inlay_hints_offset + 1
-            end
-
-            if hint.inlay_hint.paddingRight then
-                inlay_hints_offset = inlay_hints_offset + 1
-            end
-        end
-    end
-
     local to_write = open .. close
 
-    local command = string.format("normal! %dG%d|a%s", position.row, position.virtcol + inlay_hints_offset, to_write)
+    local command = string.format("normal! %dG%d|a%s", position.row, position.virtcol - 1, to_write)
 
     vim.api.nvim_command(command)
 
