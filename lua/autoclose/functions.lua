@@ -75,7 +75,7 @@ function M.autoclose(open, close)
 
     local to_write = open .. close
 
-    local command = string.format("normal! %dG%d|a%s", position.row, position.virtcol - 1, to_write)
+    local command = string.format("normal! %dG%d|i%s", position.row, position.virtcol, to_write)
 
     vim.api.nvim_command(command)
 
