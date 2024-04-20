@@ -65,17 +65,21 @@ end
 function M.autoclose(open, close)
     local position = M.get_cursor_position()
 
-    if #position.line_end > 0 then
-        local following_char = position.line_end:sub(1, 1)
+    if #position.line_end == 0 then
+        local command = string.format("normal! %dG%d|a%s", position.row, position.virtcol, open .. close)
 
-        if not characters[following_char] or close == following_char then
-            close = ""
-        end
+        vim.api.nvim_command(command)
+
+        return
     end
 
-    local to_write = open .. close
+    local following_char = position.line_end:sub(1, 1)
 
-    local command = string.format("normal! %dG%d|i%s", position.row, position.virtcol, to_write)
+    if not characters[following_char] or close == following_char then
+        close = ""
+    end
+
+    local command = string.format("normal! %dG%d|i%s", position.row, position.virtcol, open .. close)
 
     vim.api.nvim_command(command)
 
